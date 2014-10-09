@@ -1,0 +1,73 @@
+<?php
+$accountdomain = Mage::registry('codebase_accountdomain');
+$project = Mage::registry('codebase_project');
+?>
+<div class="content-header">
+    <table cellspacing="0" class="grid-header">
+        <tr>
+            <td><h3><?php echo __('Elgentos Tickets'); ?><?php if(!empty($project)) { ?> <?php echo $this->__('for'); ?> <?php echo ucwords($project); ?><?php } ?></h3></td>
+            <td class="a-right">
+                <button onclick='setLocation("add")' class="scalable save" type="button"><span style='background-image:url(<?php echo Mage::getBaseUrl('skin') ?>adminhtml/default/default/images/codebase/new.png)'><?php echo $this->__('Add ticket'); ?></span></button>
+                <button onclick="document.location.href='http://<?php echo $accountdomain; ?>.codebasehq.com/projects/<?php echo $project; ?>'" class="scalable save" type="button"><span style='background-image:url(<?php echo Mage::getBaseUrl('skin') ?>adminhtml/default/default/images/codebase/codebase.png)'><?php echo $this->__('Open Codebase'); ?></span></button>
+            </td>
+        </tr>
+    </table>
+</div>
+<div>
+    <p>
+    <?php if(!empty($project)) { ?>
+    <?php
+    $format = Mage::getStoreConfig('codebase/general/datetime');
+    $fields = array_flip(explode(',',Mage::getStoreConfig('codebase/general/fields')));
+    ?>
+        <table style='width:100%' cellpadding='0' cellspacing='0'>
+            <tr>
+                <?php if(isset($fields['id'])) { ?><th><?php echo $this->__('ID'); ?></th><?php } ?>
+                <?php if(isset($fields['type'])) { ?><th><?php echo $this->__('Type'); ?></th><?php } ?>
+                <?php if(isset($fields['summary'])) { ?><th><?php echo $this->__('Summary'); ?></th><?php } ?>
+                <?php if(isset($fields['status'])) { ?><th><?php echo $this->__('Status'); ?></th><?php } ?>
+                <?php if(isset($fields['priority'])) { ?><th><?php echo $this->__('Priority'); ?></th><?php } ?>
+                <?php if(isset($fields['category'])) { ?><th><?php echo $this->__('Category'); ?></th><?php } ?>
+                <?php if(isset($fields['reporter'])) { ?><th><?php echo $this->__('Reporter'); ?></th><?php } ?>
+                <?php if(isset($fields['assignee'])) { ?><th><?php echo $this->__('Assignee'); ?></th><?php } ?>
+                <?php if(isset($fields['created-at'])) { ?><th><?php echo $this->__('Created'); ?></th><?php } ?>
+                <?php if(isset($fields['updated-at'])) { ?><th><?php echo $this->__('Updated'); ?></th><?php } ?>
+                <?php if(Mage::getStoreConfig('codebase/general/ticketsmagento') AND isset($fields['codebase'])) { ?>
+                <th><?php echo $this->__('Codebase'); ?></th>
+                <?php }?>
+             </tr>
+        <?php
+        $ticketsResult = $this->helper('codebase/api')->tickets('/'.$project);
+        if(isset($ticketsResult['ticket-id'])) { $tickets[] = $ticketsResult; } else { $tickets = $ticketsResult; }
+        foreach($tickets as $key=>$ticket) {
+            ?>
+            <tr style='line-height:25px;background-color:<? echo ($key % 2 ? '#F7F7F7' : 'white'); ?>'>
+                <?php if(isset($fields['id'])) { ?><td><?php echo $ticket['ticket-id']; ?></td><?php } ?>
+                <?php if(isset($fields['type'])) { ?><td><?php echo (Mage::helper('codebase')->icon($ticket['ticket-type']) ? Mage::helper('codebase')->icon($ticket['ticket-type']) : $this->__($ticket['ticket-type'])); ?></td><?php } ?>
+                <?php if(isset($fields['summary'])) { ?>
+                    <?php if(Mage::getStoreConfig('codebase/general/ticketsmagento')) { ?>
+                        <td><a href='view/project/<?php echo $project; ?>/ticket/<?php echo $ticket['ticket-id']; ?>'><?php echo $ticket['summary']; ?></a></td>
+                    <?php } else { ?>
+                        <td><a href='http://<?php echo $accountdomain; ?>.codebasehq.com/projects/<?php echo $project; ?>/tickets/<?php echo $ticket['ticket-id']; ?>' target='_new'><?php echo $ticket['summary']; ?></a></td>
+                    <?php } ?>
+                <?php  } ?>
+                <?php if(isset($fields['status'])) { ?><td><span style='padding: 1px 4px;font-weight: bold;text-transform: uppercase;font-size: 90%;border-radius: 3px;-webkit-border-radius: 3px;color:white;background-color:<?php echo $ticket['status']['colour']; ?>'><?php echo $this->__($ticket['status']['name']); ?></span></td><?php }?>
+                <?php if(isset($fields['priority'])) { ?><td><span style='font-weight:bold;font-size:80%;text-transform:uppercase;color:<?php echo Mage::helper('codebase')->mapColours($ticket['priority']['colour']) ?>'><?php echo $this->__($ticket['priority']['name']); ?></span></td><?php }?>
+                <?php if(isset($fields['category'])) { ?><td><?php echo $ticket['category']['name']; ?></td><?php }?>
+                <?php if(isset($fields['reporter'])) { ?><td><?php echo $ticket['reporter']; ?></td><?php }?>
+                <?php if(isset($fields['assignee'])) { ?><td><?php echo (is_array($ticket['assignee']) ? __('None') : $ticket['assignee']); ?></td><?php }?>
+                <?php if(isset($fields['created-at'])) { ?><td><?php echo date($format,strtotime($ticket['created-at'])); ?></td><?php }?>
+                <?php if(isset($fields['updated-at'])) { ?><td><?php echo date($format,strtotime($ticket['updated-at'])); ?></td><?php }?>
+                <?php if(Mage::getStoreConfig('codebase/general/ticketsmagento') AND isset($fields['codebase'])) { ?>
+                <td><a href='http://<?php echo $accountdomain; ?>.codebasehq.com/projects/<?php echo $project; ?>/tickets/<?php echo $ticket['ticket-id']; ?>' target='_new'><?php echo Mage::helper('codebase')->icon('codebase',$this->__('Link to Codebase')); ?></a></td>
+                <?php }?>
+            </tr>
+            <?php
+        }
+        ?>
+        </table>
+    <?php } else {
+        echo $this->__('This module hasn\'t been configured yet. Please see System > Configuration > Elgentos > Codebase.');
+    } ?>
+    </p>
+</div>

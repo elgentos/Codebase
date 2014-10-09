@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Elgentos_Codebase>
+            <version>0.1.1</version>
+        </Elgentos_Codebase>
+    </modules>
+    <adminhtml>
+        <translate>
+            <modules>
+                <Elgentos_Codebase>
+                    <files>
+                        <default>Elgentos_Codebase.csv</default>
+                    </files>
+                </Elgentos_Codebase>
+            </modules>
+        </translate>
+        <layout>
+            <updates>
+                <codebase>
+                    <file>codebase.xml</file>
+                </codebase>
+            </updates>
+        </layout>
+        <menu>
+            <codebase module="codebase">
+                <title>Elgentos Tickets</title>
+                <sort_order>71</sort_order>
+                <action>codebase/adminhtml_codebase</action>
+            </codebase>
+        </menu>
+    </adminhtml>
+
+    <frontend>
+        <events>
+            <cms_page_render>
+                <observers>
+                    <codebase>
+                        <type>singleton</type>
+                        <class>Elgentos_Codebase_Model_Header</class>
+                        <method>add</method>
+                    </codebase>
+                </observers>
+            </cms_page_render>
+        </events>
+    </frontend>
+
+    <admin>
+        <routers>
+            <codebase>
+                <use>admin</use>
+                <args>
+                    <module>Elgentos_Codebase</module>
+                    <frontName>codebase</frontName>
+                </args>
+            </codebase>
+        </routers>
+    </admin>
+    <global>
+        <blocks>
+            <codebase>
+                <class>Elgentos_Codebase_Block</class>
+            </codebase>
+        </blocks>
+        <models>
+            <codebase>
+                <class>Elgentos_Codebase_Model</class>
+            </codebase>
+        </models>
+        <resources>
+            <codebase_setup>
+                <setup>
+                    <module>Elgentos_Codebase</module>
+                    <class>Elgentos_Codebase_Model_Mysql4_Setup</class>
+                </setup>
+            </codebase_setup>
+        </resources>
+
+        <helpers>
+            <codebase>
+                <class>Elgentos_Codebase_Helper</class>
+            </codebase>
+        </helpers>
+    </global>
+
+    <default>
+        <codebase>
+            <general>
+                <ticketsmagento>1</ticketsmagento>
+                <secure>1</secure>
+                <fields>id,type,summary,reporter,assignee,created-at,updated-at,status,priority,codebase,browser</fields>
+                <datetime>d-m-Y H:i:s</datetime>
+            </general>
+        </codebase>
+    </default>
+</config>

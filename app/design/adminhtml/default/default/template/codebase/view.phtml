@@ -1,0 +1,42 @@
+<?php
+$ticketId = Mage::registry('codebase_ticket');
+$project = Mage::registry('codebase_project');
+$accountdomain = Mage::registry('codebase_accountdomain');
+?>
+<div class="content-header">
+    <table cellspacing="0" class="grid-header">
+        <tr>
+            <td><h3><?php echo __('Elgentos Tickets'); ?><?php if(!empty($project)) { ?> <?php echo $this->__('for'); ?> <?php echo ucwords($project); ?><?php } ?> - ticket #<?php echo $ticketId; ?></h3></td>
+            <td class="a-right">
+                <button onclick="history.go(-1)" class="scalable save" type="button"><span><?php echo $this->__('Back'); ?></span></button>
+                <button onclick="document.location.href='http://<?php echo $accountdomain; ?>.codebasehq.com/projects/<?php echo $project; ?>/tickets/<?php echo $ticketId; ?>'" class="scalable save" type="button"><span><?php echo $this->__('Open ticket in Codebase'); ?></span></button>
+            </td>
+        </tr>
+    </table>
+</div>
+<div>
+    <p>
+    <?php
+    $notesResult = Mage::helper('codebase/api')->notes($ticketId);
+    if(isset($notesResult['id'])) { $notes[] = $notesResult; } else { $notes = $notesResult; }
+    foreach($notes as $note) {
+        ?>
+        <div class="entry-edit">
+            <h4 class="icon-head head-edit-form fieldset-legend"><?php echo $this->__('Note'); ?> #<?php echo $note['id']; ?> <a href='http://<?php echo $accountdomain; ?>.codebasehq.com/projects/<?php echo $project; ?>/tickets/<?php echo $ticketId; ?>' target='_new'><img src='https://dq0ntt3ts4asf.cloudfront.net/assets/c4cfa8/images/favicon.png' alt='Codebase' /></a></h4>
+            <fieldset id="my-fieldset">
+                <?php echo (is_array($note['content']) ? $this->__('Empty note.') : $note['content']);?>
+                <?php if(isset($note['attachment']['url'])) { ?>
+                    <br /><a href='<?php echo $note['attachment']['url']; ?>' target='_new'><img width='200px;' src='<?php echo $note['attachment']['url']; ?>' /></a>
+                <?php } ?>
+                <br /><br />
+                <small>
+                    <?php echo $this->__('Created'); ?>: <?php echo date("d-m-Y H:i:s",strtotime($note['created-at'])); ?><br />
+                    <?php echo $this->__('Updated'); ?>: <?php echo date("d-m-Y H:i:s",strtotime($note['updated-at'])); ?>
+                </small>
+            </fieldset>
+        </div>
+        <?php
+    }
+    ?>
+    </p>
+</div>

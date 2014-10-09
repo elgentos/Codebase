@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<layout>
+    <codebase_adminhtml_codebase_index>
+        <reference name="content">
+            <block type="adminhtml/template" name="codebase" template="codebase/index.phtml" />
+        </reference>
+    </codebase_adminhtml_codebase_index>
+    <codebase_adminhtml_codebase_view>
+        <reference name="content">
+            <block type="adminhtml/template" name="codebase-view" template="codebase/view.phtml" />
+        </reference>
+    </codebase_adminhtml_codebase_view>
+    <codebase_adminhtml_codebase_add>
+        <reference name="content">
+            <block type="adminhtml/template" name="codebase-view" template="codebase/add.phtml" />
+        </reference>
+    </codebase_adminhtml_codebase_add>
+</layout>

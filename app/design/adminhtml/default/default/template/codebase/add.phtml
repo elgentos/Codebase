@@ -1,0 +1,116 @@
+<?php $fields = array_flip(explode(',',Mage::getStoreConfig('codebase/general/fields'))); ?>
+<div class="content-header">
+    <table cellspacing="0" class="grid-header">
+        <tr>
+            <td><h3><?=$this->__('Add ticket')?></h3></td>
+            <td class="a-right">
+                <button onclick="editForm.submit()" class="scalable save" type="button"><span style='background-image:url(<?php echo Mage::getBaseUrl('skin') ?>adminhtml/default/default/images/codebase/new.png)'><?php echo $this->__('Add ticket'); ?></span></button>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="entry-edit">
+    <form id="edit_form" name="edit_form" method="post" enctype="multipart/form-data" action="<?=$this->getUrl('*/*/addpost')?>">
+        <input name="form_key" type="hidden" value="<?php echo Mage::getSingleton('core/session')->getFormKey() ?>" />
+        <h4 class="icon-head head-edit-form fieldset-legend"><?=$this->__('Description')?></h4>
+        <fieldset id="my-fieldset">
+            <table cellspacing="0" class="form-list">
+                <?php if(isset($fields['type'])) { ?>
+                <tr>
+                    <td class="label"><?=$this->__('Type')?> <span class="required">*</span></td>
+                    <td class="input-ele"><select name="ticket[type]">
+                        <option value="bug"><?php echo __('Bug'); ?></option>
+                        <option value="enhancement"><?php echo __('Enhancement'); ?></option>
+                        <option value="feature" selected="selected"><?php echo __('Feature'); ?></option>
+                        <option value="task"><?php echo __('Task'); ?></option>
+                    </select></td>
+                </tr>
+                <?php }?>
+                <?php if(isset($fields['status'])) { ?>
+                <tr>
+                    <td class="label"><?=$this->__('Status')?> <span class="required">*</span></td>
+                    <td class="input-ele"><select name="ticket[status-id]">
+                    <?php foreach(Mage::helper('codebase/api')->statuses() as $status) { ?>
+                        <option value="<?php echo $status['id']; ?>"<?php if(strtolower($status['name'])=='new') { ?> selected="selected"<? } ?>><?php echo __($status['name']); ?></option>
+                    <?php } ?>
+                    </select></td>
+                </tr>
+                <?php }?>
+                <?php if(isset($fields['priority'])) { ?>
+                <tr>
+                    <td class="label"><?=$this->__('Priority')?> <span class="required">*</span></td>
+                    <td class="input-ele"><select name="ticket[priority-id]">
+                    <?php foreach(Mage::helper('codebase/api')->priorities() as $priority) { ?>
+                        <option value="<?php echo $priority['id']; ?>"<?php if(strtolower($priority['name'])=='normal') { ?> selected="selected"<? } ?>><?php echo __($priority['name']); ?></option>
+                    <?php } ?>
+                    </select></td>
+                </tr>
+                <?php }?>
+                <?php if(isset($fields['category'])) { ?>
+                <tr>
+                    <td class="label"><?=$this->__('Category')?> <span class="required">*</span></td>
+                    <td class="input-ele"><select name="ticket[category-id]">
+                    <?php foreach(Mage::helper('codebase/api')->categories() as $category) { ?>
+                        <option value="<?php echo $category['id']; ?>"<?php if(strtolower($category['name'])=='general') { ?> selected="selected"<? } ?>><?php echo __($category['name']); ?></option>
+                    <?php } ?>
+                    </select></td>
+                </tr>
+                <?php }?>
+                <?php if(isset($fields['summary'])) { ?>
+                <tr>
+                    <td class="label"><?=$this->__('Summary')?> <span class="required">*</span></td>
+                    <td class="input-ele"><input class="input-text required-entry" name="ticket[summary]" /></td>
+                </tr>
+                <?php }?>
+                <?php if(isset($fields['browser'])) { ?>
+                <tr>
+                    <td class="label"><?php echo $this->__('Browser')?> <span class="required">*</span></td>
+                    <td class="input-ele"><select name="ticket[browser]">
+                    <option selected="selected" value="unknown"><?php echo $this->__('Browser unknown'); ?></option>
+                    <?php foreach(Mage::helper('codebase')->getBrowsers() as $browser=>$versions) {
+                        ?>
+                        <optgroup label="<?php echo $browser; ?>">
+                        <?
+                        foreach($versions as $key=>$version) {
+                            ?>
+                            <option><?php echo $browser.' ' .$version; ?></option>
+                            <?
+                        }
+                        ?></optgroup><?
+                    }
+                    ?>
+                    </select></td>
+                </tr>
+                <?php }?>
+                <tr>
+                    <td class="label"><?=$this->__('Additional information')?></td>
+                    <td class="input-ele"><textarea name="ticket[additional]" style='width:400px;height:100px;'></textarea></td>
+                </tr>
+            </table>
+        </fieldset>
+        <h4 class="icon-head head-edit-form fieldset-legend"><?=$this->__('Files')?> <small><?php echo $this->__('(i.e. screenshots)'); ?></small></h4>
+        <fieldset id="my-fieldset">
+            <table cellspacing="0" class="form-list">
+                <tr>
+                    <td class="label"><?=$this->__('File')?></td>
+                    <td class="input-ele"><input class="input-text" type='file' name="ticket[files][]" /></td>
+                </tr>
+                <tr>
+                    <td class="label"><?=$this->__('File')?></td>
+                    <td class="input-ele"><input class="input-text" type='file' name="ticket[files][]" /></td>
+                </tr>
+                <tr>
+                    <td class="label"><?=$this->__('File')?></td>
+                    <td class="input-ele"><input class="input-text" type='file' name="ticket[files][]" /></td>
+                </tr>
+                <tr>
+                    <td class="label"><?=$this->__('File')?></td>
+                    <td class="input-ele"><input class="input-text" type='file' name="ticket[files][]" /></td>
+                </tr>
+            </table>
+        </fieldset>
+    </form>
+</div>
+<script type="text/javascript">
+    var editForm = new varienForm('edit_form');
+</script>

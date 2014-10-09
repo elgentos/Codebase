@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+       <acl>
+           <resources>
+               <admin>
+                   <children>
+                       <system>
+                           <children>
+                               <config>
+                                   <children>
+                                       <codebase translate="title" module="codebase">
+                                           <title>Codebase</title>
+                                       </codebase>
+                                   </children>
+                               </config>
+                           </children>
+                       </system>
+                   </children>
+               </admin>
+           </resources>
+       </acl>
+</config>
